@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-import numpy as np;
+import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
@@ -26,7 +26,7 @@ st.set_page_config(page_title='OLC2 Machine Learning App',
 
 #---------------------------------#
 st.write("""
-# OLC2 Machine Learning App
+# Compiladores 2 - Data Science
 """)
 
 #---------------------------------#
