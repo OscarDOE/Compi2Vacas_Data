@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot 
+import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 
@@ -99,9 +99,9 @@ def lineal(datacsv):
         with st.sidebar.header(''):
             title = st.text_input('Type the prediction data')
 
-        matplotlib.pyplot.scatter(X, Y)
-        matplotlib.pyplot.plot(X, Y_pred, color='red')
-        matplotlib.pyplot.savefig("graficaLineal.png")
+        plt.scatter(X, Y)
+        plt.plot(X, Y_pred, color='red')
+        plt.savefig("graficaLineal.png")
         st.write("Graficar puntos: ")
 
         colu1, colu2, colu3 = st.columns([1,4,1])
