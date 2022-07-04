@@ -1,4 +1,3 @@
-from shutil import which
 from sklearn import preprocessing
 import streamlit as st
 import pandas as pd
