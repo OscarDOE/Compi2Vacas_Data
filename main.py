@@ -1,4 +1,5 @@
 from sklearn import preprocessing
+from sklearn.neural_network import MLPClassifier
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 import streamlit as st
 import pandas as pd
@@ -234,8 +235,7 @@ def gauss(archivo):
         predict = model.predict([array_predict])
         predicto = arr
         st.header("El valor es: "+ str(predict[0]))
-    else:
-        st.info("Ingrese datos a predecir")
+
 
 def arbolito(archivo):
     data = preprocessing.LabelEncoder()
@@ -276,8 +276,42 @@ def arbolito(archivo):
         st.info("INTRODUZCA VALORES DE PRUEBA")
 
 def redes(archivo):
-    
-    pass
+    st.write("REDES")
+    data = preprocessing.LabelEncoder()
+    Y_predict = st.text_input(
+            'Introduce los valores a clasificar')
+    features = []
+    for d in archivo:
+        lista = tuple(data.fit_transform(archivo[d]))
+        features.append(lista)
+    features_encoded_antes = list()
+    for i in range(len(features[0])):
+        arr = [fila[i] for fila in features]
+        features_encoded_antes.append(tuple(arr))
+    with tablagauss2:
+        st.write("Datos Codificados")
+        st.dataframe(features_encoded_antes)
+
+    if Y_predict != "":
+        booleanos = features.pop()
+        features_encoded = list()
+        for i in range(len(features[0])):
+            arr = [fila[i] for fila in features]
+            features_encoded.append(tuple(arr))
+        Y_pred = Y_predict.strip()
+        array_predict = list()
+        for i in Y_pred:
+            if i != "," and i != " " and i != ", ":
+                array_predict.append(int(i))
+        model = MLPClassifier(hidden_layer_sizes=(10,10,10), max_iter=500, alpha=0.0001,
+                     solver='adam', random_state=21,tol=0.000000001).fit(features_encoded, booleanos)
+
+        if Y_predict != "":
+            predict = model.predict([array_predict])
+            st.info(predict[0])   
+    else:
+        st.info("INTRODUZCA VALORES DE PRUEBA")
+
     
 
 with archi1:
@@ -315,5 +349,8 @@ if carga is not None:
             gauss(data)
         if opcion == "Clasificador de árboles de decisión":
             arbolito(data)
+        if opcion == "Redes neuronales":
+            redes(data)
+        
 else:
     st.info('Introduzca el archivo para continuar...')
