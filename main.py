@@ -272,7 +272,6 @@ def gauss(archivo):
     for i in range(len(features_Y[0])):
         arr = [fila[i] for fila in features_Y]
         features_Y_encoded.append(tuple(arr))
-
     xxx1, xxx2 = st.columns(2)
     with xxx1:
         st.dataframe(ausarxxx)
@@ -330,13 +329,79 @@ def arbolito(archivo):
         
         plot_tree(model, filled=True)
         plt.savefig("Arbol.png")
-        st.subheader("Grafica: ")
         st.image("Arbol.png")
         if Y_predict != "":
             predict = model.predict([array_predict])
-            st.info(predict[0])   
+            st.header("El valor es: "+str(predict[0]))   
     else:
         st.info("INTRODUZCA VALORES DE PRUEBA")
+
+    
+#CON PARAMETROS SELECCIONADOS
+    
+
+    param_usados = []
+    var = []
+    for multi in archivo:
+        param_usados.append(multi)
+        var.append(multi)
+
+    que_usar = st.multiselect("Seleccione los parámetros a ustilizar",param_usados,[])
+    que_booleano = st.selectbox("Seleccione el parámetro binario",(var))
+    features_a_usar = []
+    features_Y = []
+    ausar = []
+    yausar= []
+    for datas in archivo:
+        if datas in que_usar:
+            lista = tuple(data.fit_transform(archivo[datas]))
+            features_a_usar.append(lista)
+            ausar.append(archivo[datas])
+        if datas in que_booleano:
+            lista = tuple(data.fit_transform(archivo[datas]))
+            features_Y.append(lista)
+            yausar.append(archivo[datas])
+    features_a_usar_encoded = list()
+    features_Y_encoded = list()
+    ausarxxx = list()
+    yausarxxx = list()
+    for i in range(len(features_a_usar[0])):
+        arr = [fila[i] for fila in features_a_usar]
+        features_a_usar_encoded.append(tuple(arr))
+    for i in range(len(ausar[0])):
+        arr = [fila[i] for fila in ausar]
+        ausarxxx.append(tuple(arr))
+    for i in range(len(yausar[0])):
+        arr = [fila[i] for fila in yausar]
+        yausarxxx.append(tuple(arr))
+    for i in range(len(features_Y[0])):
+        arr = [fila[i] for fila in features_Y]
+        features_Y_encoded.append(tuple(arr))
+    xxx1, xxx2 = st.columns(2)
+    with xxx1:
+        st.dataframe(ausarxxx)
+        st.dataframe(yausarxxx)
+    with xxx2:
+        st.dataframe(features_a_usar_encoded)
+        st.dataframe(features_Y_encoded)
+
+    Y_predicto = st.text_input("Ingrese el término a predecir, de los parámetros seleccionados, en términos de los datos codificados")
+    if Y_predicto == "":
+        st.info("Ingrese el valor a predecir")
+    
+    
+    model = GaussianNB()
+    model.fit(features_a_usar_encoded, features_Y_encoded)
+    print(model)
+
+    if Y_predicto != "":
+        Y_pred = Y_predict.strip()
+        array_predict = list()
+        for i in Y_pred:
+            if i != "," and i != " " and i != ", ":
+                array_predict.append(int(i))
+        predict = model.predict([array_predict])
+        st.header("El valor es: "+ str(predict[0]))
 
 def redes(archivo):
     st.write("REDES")
@@ -371,9 +436,76 @@ def redes(archivo):
 
         if Y_predict != "":
             predict = model.predict([array_predict])
-            st.info(predict[0])   
+            st.info("El valor es: "+str(predict[0]))   
     else:
         st.info("INTRODUZCA VALORES DE PRUEBA")
+
+    
+#CON PARAMETROS SELECCIONADOS
+    
+
+    param_usados = []
+    var = []
+    for multi in archivo:
+        param_usados.append(multi)
+        var.append(multi)
+
+    que_usar = st.multiselect("Seleccione los parámetros a ustilizar",param_usados,[])
+    que_booleano = st.selectbox("Seleccione el parámetro binario",(var))
+    features_a_usar = []
+    features_Y = []
+    ausar = []
+    yausar= []
+    for datas in archivo:
+        if datas in que_usar:
+            lista = tuple(data.fit_transform(archivo[datas]))
+            features_a_usar.append(lista)
+            ausar.append(archivo[datas])
+        if datas in que_booleano:
+            lista = tuple(data.fit_transform(archivo[datas]))
+            features_Y.append(lista)
+            yausar.append(archivo[datas])
+    features_a_usar_encoded = list()
+    features_Y_encoded = list()
+    ausarxxx = list()
+    yausarxxx = list()
+    for i in range(len(features_a_usar[0])):
+        arr = [fila[i] for fila in features_a_usar]
+        features_a_usar_encoded.append(tuple(arr))
+    for i in range(len(ausar[0])):
+        arr = [fila[i] for fila in ausar]
+        ausarxxx.append(tuple(arr))
+    for i in range(len(yausar[0])):
+        arr = [fila[i] for fila in yausar]
+        yausarxxx.append(tuple(arr))
+    for i in range(len(features_Y[0])):
+        arr = [fila[i] for fila in features_Y]
+        features_Y_encoded.append(tuple(arr))
+    xxx1, xxx2 = st.columns(2)
+    with xxx1:
+        st.dataframe(ausarxxx)
+        st.dataframe(yausarxxx)
+    with xxx2:
+        st.dataframe(features_a_usar_encoded)
+        st.dataframe(features_Y_encoded)
+
+    Y_predicto = st.text_input("Ingrese el término a predecir, de los parámetros seleccionados, en términos de los datos codificados")
+    if Y_predicto == "":
+        st.info("Ingrese el valor a predecir")
+    
+    
+    model = GaussianNB()
+    model.fit(features_a_usar_encoded, features_Y_encoded)
+    print(model)
+
+    if Y_predicto != "":
+        Y_pred = Y_predict.strip()
+        array_predict = list()
+        for i in Y_pred:
+            if i != "," and i != " " and i != ", ":
+                array_predict.append(int(i))
+        predict = model.predict([array_predict])
+        st.header("El valor es: "+ str(predict[0]))
 
     
 
