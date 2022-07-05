@@ -58,13 +58,13 @@ def lineal(archivo):
             st.info(r2_score(Y, Y_pred))
         with st.sidebar.header(''):
             st.header("Ingrese el valor a predecir: ")
-            title = st.text_input('Ingrese el valor a predecir: ')
+            valor_pred = st.text_input('Ingrese el valor a predecir: ')
 
         plt.scatter(X, Y)
-        plt.plot(X, Y_pred, color='red')
-        plt.savefig("graficaLineal.png")
+        plt.plot(X, Y_pred, color='purple')
+        plt.savefig("grafica.png")
         with col3:
-            st.image("./graficaLineal.png")
+            st.image("./grafica.png")
         coe = linear_regression.coef_[0]
         inter=linear_regression.intercept_
         coe2="{0:.4f}".format(coe)
@@ -79,10 +79,9 @@ def lineal(archivo):
         if float(coe2)>0:
             st.latex(f'''y = {str(inter2)} + {str(coe2)} x''')
         else: st.latex(f'''y = {str(inter2)} {str(coe2)} x''')        
-        if title != "":
-            titleInt = int(title)
+        if valor_pred != "":
             st.write("Predicción: ")
-            Y_new = linear_regression.predict([[int(titleInt)]])
+            Y_new = linear_regression.predict([[int(valor_pred)]])
             st.info(Y_new)
         else: st.info('Ingrese un valor a predecir...')
     else:st.info('Seleccione las variables X y Y...')
@@ -154,9 +153,9 @@ def polinomial(archivo):
             plt.title("Regresion Polinomial de grado "+str(grade))
             plt.xlabel(valorX)
             plt.ylabel(valorY)
-            plt.savefig("graficaLineal.png")
+            plt.savefig("grafica.png")
             with col3:
-                st.image("./graficaLineal.png")
+                st.image("./grafica.png")
             coe = linear_regression.coef_[0]
             inter=linear_regression.intercept_
             inter2="{0:.4f}".format(inter)
@@ -215,7 +214,6 @@ def gauss(archivo):
     for i in range(len(features[0])):
         arr = [fila[i] for fila in features]
         features_encoded.append(tuple(arr))
-    
 
     Y_predict = st.text_input("Ingrese el término a predecir, en términos de los datos codificados")
     if Y_predict == "":
@@ -233,7 +231,72 @@ def gauss(archivo):
             if i != "," and i != " " and i != ", ":
                 array_predict.append(int(i))
         predict = model.predict([array_predict])
-        predicto = arr
+        st.header("El valor es: "+ str(predict[0]))
+#CON PARAMETROS SELECCIONADOS
+    
+
+    param_usados = []
+    var = []
+    for multi in archivo:
+        param_usados.append(multi)
+        var.append(multi)
+
+    que_usar = st.multiselect("Seleccione los parámetros a ustilizar",param_usados,[])
+    que_booleano = st.selectbox("Seleccione el parámetro binario",(var))
+    features_a_usar = []
+    features_Y = []
+    ausar = []
+    yausar= []
+    for datas in archivo:
+        if datas in que_usar:
+            lista = tuple(data.fit_transform(archivo[datas]))
+            features_a_usar.append(lista)
+            ausar.append(archivo[datas])
+        if datas in que_booleano:
+            lista = tuple(data.fit_transform(archivo[datas]))
+            features_Y.append(lista)
+            yausar.append(archivo[datas])
+    features_a_usar_encoded = list()
+    features_Y_encoded = list()
+    ausarxxx = list()
+    yausarxxx = list()
+    for i in range(len(features_a_usar[0])):
+        arr = [fila[i] for fila in features_a_usar]
+        features_a_usar_encoded.append(tuple(arr))
+    for i in range(len(ausar[0])):
+        arr = [fila[i] for fila in ausar]
+        ausarxxx.append(tuple(arr))
+    for i in range(len(yausar[0])):
+        arr = [fila[i] for fila in yausar]
+        yausarxxx.append(tuple(arr))
+    for i in range(len(features_Y[0])):
+        arr = [fila[i] for fila in features_Y]
+        features_Y_encoded.append(tuple(arr))
+
+    xxx1, xxx2 = st.columns(2)
+    with xxx1:
+        st.dataframe(ausarxxx)
+        st.dataframe(yausarxxx)
+    with xxx2:
+        st.dataframe(features_a_usar_encoded)
+        st.dataframe(features_Y_encoded)
+
+    Y_predicto = st.text_input("Ingrese el término a predecir, de los parámetros seleccionados, en términos de los datos codificados")
+    if Y_predicto == "":
+        st.info("Ingrese el valor a predecir")
+    
+    
+    model = GaussianNB()
+    model.fit(features_a_usar_encoded, features_Y_encoded)
+    print(model)
+
+    if Y_predicto != "":
+        Y_pred = Y_predict.strip()
+        array_predict = list()
+        for i in Y_pred:
+            if i != "," and i != " " and i != ", ":
+                array_predict.append(int(i))
+        predict = model.predict([array_predict])
         st.header("El valor es: "+ str(predict[0]))
 
 
